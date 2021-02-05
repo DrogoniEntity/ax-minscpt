@@ -81,14 +81,14 @@ public class MyAwesomeCommand extends AbstractCommand
     @Override
     public void run()
     {
-    	System.out.println(this.him + " is awesome !);
+    	System.out.println(this.him + " is awesome !");
     }
     
     @Override
     public void parse(String args[])
     {
     	if (args.length < 1)
-        	throw new MalformedCommandException("Synxtax: <awesome people>);
+        	throw new MalformedCommandException("Synxtax: <awesome people>");
        	this.him = args[0];
     }
 }
