@@ -20,7 +20,6 @@ public class CommandAdd extends AbstractCommand
     @Override
     public void run()
     {
-	System.out.println("Dest == " + this.resultLocation);
 	Double result = this.operand1 + this.operand2;
 	this.script.setVariable(this.resultLocation, result);
     }
