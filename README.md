@@ -71,9 +71,9 @@ If you want to directly register already implemented commands quoted before, inv
 ```java
 public class MyAwesomeCommand extends AbstractCommand
 {
-	private String him;
+    private String him;
     
-	public MyAwesomeCommand(AbstractScript script)
+    public MyAwesomeCommand(AbstractScript script)
     {
     	super(script);
     }
@@ -95,7 +95,7 @@ public class MyAwesomeCommand extends AbstractCommand
 
 public class MyScript extends AbstractScript
 {
-	public AbstractScript(File scriptFile)
+    public AbstractScript(File scriptFile)
     {
     	super(scriptFile);
     }
@@ -110,7 +110,7 @@ public class MyScript extends AbstractScript
 
 public class Runner
 {
-	public static void main(String args[])
+    public static void main(String args[])
     {
     	MyScript script = new MyScript(new File("my script.txt"));
         script.init();
