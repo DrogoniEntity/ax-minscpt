@@ -1,0 +1,27 @@
+# A simple comment
+set a "World !"
+echo Hello $a
+
+# Test comparaison
+set b 12
+compare temp $b 0
+execnexton temp 0
+	echo I shouldn't be called !
+
+execnexton b $b
+echo I have been executed :)
+
+echo I'm here
+
+# Test skip
+skip 1
+echo I havn't be skiped !
+echo Hey !
+
+	echo I have been indented :)
+
+set i 0
+nop "Begin of loop
+	echo $i
+	add i $i 1
+goto 13
