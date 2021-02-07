@@ -21,7 +21,8 @@ echo Hey !
 	echo I have been indented :)
 
 set i 0
-nop "Begin of loop
+:begin_of_loop
 	echo $i
 	add i $i 1
-goto 13
+	nop Do nothing
+goto begin_of_loop

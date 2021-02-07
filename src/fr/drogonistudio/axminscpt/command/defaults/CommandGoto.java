@@ -6,7 +6,7 @@ import fr.drogonistudio.axminscpt.exceptions.MalformedCommandException;
 
 public class CommandGoto extends AbstractCommand
 {
-    private int destination;
+    private String label;
     
     public CommandGoto(AbstractScript script)
     {
@@ -16,22 +16,18 @@ public class CommandGoto extends AbstractCommand
     @Override
     public void run()
     {
-	this.script.setCommandPointer(this.destination);
+	this.script.moveToLabel(this.label);
     }
 
     @Override
     public void parse(String[] args)
     {
 	if (args.length < 1)
-	    throw new MalformedCommandException("Syntax: <absolute position>");
-	try
-	{
-	    this.destination = Integer.parseInt(args[0]);
-	}
-	catch (NumberFormatException ex)
-	{
-	    throw new MalformedCommandException("Argument must be an integer");
-	}
+	    throw new MalformedCommandException("Syntax: <label name>");
+
+	if (!this.script.hasLabel(args[0]))
+	    throw new MalformedCommandException("label not found");
+	this.label = args[0];
     }
     
 }

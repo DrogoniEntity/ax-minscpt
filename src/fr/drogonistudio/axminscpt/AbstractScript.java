@@ -18,6 +18,7 @@ public abstract class AbstractScript implements Runnable
     private int commandPointer;
     
     private final Map<String, Object> variables;
+    private final Map<String, Integer> labels;
     
     protected final Map<String, Class<? extends AbstractCommand>> supportedCommands;
     
@@ -27,6 +28,7 @@ public abstract class AbstractScript implements Runnable
 	this.fileLines = new ArrayList<>();
 	this.scriptFile = scriptFile;
 	this.variables = new HashMap<>();
+	this.labels = new HashMap<>();
     }
     
     /**
@@ -55,7 +57,6 @@ public abstract class AbstractScript implements Runnable
     {
 	String context = null;
 	AbstractCommand commandToRun = null;
-	this.commandPointer = -1;
 	
 	try
 	{
@@ -63,21 +64,45 @@ public abstract class AbstractScript implements Runnable
 	    context = "Reading file";
 	    String line;
 	    BufferedReader reader = new BufferedReader(new FileReader(this.scriptFile));
+	    this.commandPointer = 0;
+	    
 	    while ((line = reader.readLine()) != null)
 	    {
 		line = line.trim();
-		if (!line.isEmpty() && !line.startsWith("#"))
+		
+		// Define a label if the line begin with ":"
+		if (line.startsWith(":"))
+		{
+		    String labelName = line.substring(1);
+		    
+		    // We will keep only the first word
+		    int firstSpaceIndex = labelName.indexOf(' ');
+		    if (firstSpaceIndex != -1)
+			labelName = labelName.substring(0, firstSpaceIndex - 1);
+		    
+		    // The label point to "pointer - 1" because, when we move to the line,
+		    // pointer will be incremented to "+1" after the action
+		    this.labels.put(labelName, (this.commandPointer - 1));
+		}
+		
+		// Register a command if it's not a dummy line (empty line or comment)
+		else if (!line.isEmpty() && !line.startsWith("#"))
+		{
 		    this.fileLines.add(line.trim());
+		    ++this.commandPointer;
+		}
 	    }
 	    
 	    reader.close();
 	    
 	    // Now, let's execute
-	    context = "Executing";
 	    this.commandPointer = 0;
 	    while (this.commandPointer < this.fileLines.size())
 	    {
+		context = "Parsing";
 		commandToRun = this.parse(this.fileLines.get(this.commandPointer));
+		
+		context = "Executing";
 		commandToRun.run();
 		
 		++this.commandPointer;
@@ -86,7 +111,7 @@ public abstract class AbstractScript implements Runnable
 	catch (Throwable t)
 	{
 	    System.err.println("Script failed !");
-	    System.err.printf("At line %d\n", this.commandPointer);
+	    System.err.printf("Pointer: %d\n", this.commandPointer);
 	    System.err.println("Context: " + context);
 	    t.printStackTrace();
 	    
@@ -163,11 +188,29 @@ public abstract class AbstractScript implements Runnable
     
     public final void setCommandPointer(int nextPointer)
     {
+	if (nextPointer < -1)
+	    nextPointer = -1;
+	
 	this.commandPointer = nextPointer;
     }
     
     public final void moveCommandPointer(int relativeMove)
     {
-	this.commandPointer = this.commandPointer + relativeMove;
+	this.setCommandPointer(this.commandPointer + relativeMove);
+    }
+    
+    public final boolean hasLabel(String labelName)
+    {
+	return this.labels.containsKey(labelName);
+    }
+    
+    public final void moveToLabel(String labelName)
+    {
+	// Checking if a label already exists
+	if (!this.labels.containsKey(labelName))
+	    throw new NullPointerException("label not found");
+	
+	// If it's true, move to label's pointer
+	this.commandPointer = this.labels.get(labelName);
     }
 }
