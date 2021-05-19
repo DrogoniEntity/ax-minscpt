@@ -95,7 +95,7 @@ public class MyAwesomeCommand extends AbstractCommand
 
 public class MyScript extends AbstractScript
 {
-    public AbstractScript(File scriptFile)
+    public MyScript(File scriptFile)
     {
     	super(scriptFile);
     }
