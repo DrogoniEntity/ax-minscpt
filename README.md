@@ -118,8 +118,3 @@ public class Runner
     }
 }
 ```
-
-## License
-There is no license. You can do what you with it ! Have fun ;).
-
-*But, if you can credit, it can be awesome :).*
